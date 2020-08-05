@@ -9,30 +9,42 @@ library(ggplot2)
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # must specify encoding!
 Sys.setlocale("LC_ALL", "English")
 
-# tuesdata <- tidytuesdayR::tt_load('2020-06-30') # don't actually need all this
+# Making up data
 
-vis = readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-06-30/character_visualization.csv')
-depict = dplyr::select(vis, issue, costume, character, depicted)
+a2 = 0.32
+a1 = 1-a2
 
-# make dataframe for ggplotting
-depict %>% 
-  group_by(issue, character) %>% 
-  summarise(total_depictions = sum(depicted)) -> new.df
-# list all characters: 
-# new.df$character %>% unique %>% dput
+# generate N people with A1 and A2 assuming HWE
+n = 1000
+hom_a1 = floor(a1^2 * n)
+hom_a2 = floor(a2^2 * n)
+het = n - hom_a1 - hom_a2
 
-# make dataframe for counting number of issues
-new.df %>% reshape2::dcast(character ~ issue) %>% t() %>% as.data.frame() -> new.df2
-colnames(new.df2) = unlist(new.df2[1,])
-new.df2 = new.df2[-1,]
-new.df2$issue = as.numeric(rownames(new.df2))
-new.df2 = as.data.frame(apply(new.df2, 2, as.numeric))
+# Height distribution 
+avg.height = 900
+sd.height = 30
+
+# Sex/Age effects
+avg.male = 100 # (males are 100 cm taller, on average)
+avg.height = 5 # (for each additional year of age, people are on average 5cm taller)
+
+# make dataframe
+heights = rnorm(n, mean = avg.height, sd = sd.height)
+
+data.frame(height = heights, age = age, sex = sex)
+heights[1:nrow(hom_a1)]
+
+
+# Get data: Palmer penguins
+library(palmerpenguins)
+penguins
+
+ggplot(penguins, aes(body_mass_g, bill_length_mm, col = species)) + geom_point()
 
 # colorblind palette
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-# setwd('~/Documents/Making Things/Tidy.Tuesday/Cocktails/')
 function(input, output) {
   output$downloadData <- downloadHandler(filename ="Issues_both_characters.csv",
     content = function(file){

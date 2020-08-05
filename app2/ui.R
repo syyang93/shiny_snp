@@ -1,0 +1,27 @@
+library(shiny)
+library(magrittr)
+library(shinythemes)
+library(tidyverse)
+
+fluidPage(theme = shinytheme("flatly"),
+          tags$style(type='text/css', ".selectize-input { font-size: 14; line-height: 14px;} .selectize-dropdown { font-size: 14; line-height: 1.5; }"),
+          
+          # Application title
+          titlePanel("Do hours of studying predict test scores?"),
+          # Sidebar 
+          sidebarLayout(
+            sidebarPanel(
+              sliderInput('N', 'Number of observations', min = 0, max = 100, value = 50),
+              sliderInput('Beta', 'For every hour of studying, how many additional points do you expect to gain? (Effect estimate)', min = 0, max = 2, value = 1, step = 0.1), # for every hour that you study, how many extra points do you get?
+              sliderInput('errorsd', 'On average, how many points will observed scores deviate from expected test scores? (Error term)', min = 0, max = 20, value = 5),
+              checkboxInput('covariate', div(style = "font-size:15px", "Color plot by confounding covariate"), value = FALSE),
+              downloadButton("downloadData", "Download simulated data as a csv")
+            ),
+            # Show the data
+            mainPanel(
+              plotOutput("showPlot"),
+              h5(textOutput("lm")),
+              htmlOutput('text')
+            )
+          )
+)
