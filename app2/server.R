@@ -22,24 +22,6 @@ mysamp <- function(n, m, s, lwr, upr, nnorm) {
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # must specify encoding!
 Sys.setlocale("LC_ALL", "English")
 
-# revenue ~ ad spending
-# test score ~ time studying + class 
-# salary ~ years of experience + degrees
-
-# N = 1000 # 1000 people
-# m = 100
-# s = 2
-# 
-# predictor = rnorm(N, mean = m, sd = s)
-# beta = 0.5
-# se = 0.01
-# intercept = 3
-# outcome = intercept + rnorm(N, mean = beta, sd = se) * predictor
-# 
-# plot(predictor, outcome)
-# lm(outcome ~ predictor) %>% summary
-
-# add confounders
 
 # monthly exam, hours = hours studied in one month
 # colorblind palette
@@ -60,11 +42,19 @@ function(input, output) {
     
     # function to restrict hours of studying to be greater than 0
     # taken from here: https://stackoverflow.com/questions/19343133/setting-upper-and-lower-limits-in-rnorm
-    predictor = mysamp(N, m, s, 0, 100, nnorm = 100)
+    predictor = mysamp(N, m, s, 0, 100, nnorm = 600)
     
     intercept = 25 # You'd get 25 points on the test if you did not study at all.
     outcome = intercept + beta * predictor + error * input$errorsd
-    df = data.frame(predictor = predictor, outcome = outcome)
+    df.first = data.frame(student_id = 1:length(predictor), predictor = predictor, outcome = outcome)
+    if(input$covariate == TRUE){
+      classA.sample = sample(nrow(df.first), nrow(df.first)/2)
+      df.first$Teacher = 'Placeholder'
+      df.first$Teacher[classA.sample] = 'Mr. A'
+      df.first$Teacher[-classA.sample] = 'Mr. B'
+      df.first$outcome[classA.sample] = df.first$outcome[classA.sample] + input$teacher_effect
+    } 
+    df = df.first
   })
   output$downloadData <- downloadHandler(filename ="simulated_data.csv",
                                          content = function(file){
@@ -81,11 +71,36 @@ function(input, output) {
     HTML(paste(str1, str2, str3, sep = '<br/>'))
     
   })
+  output$teacherSlider = renderUI({
+    if (input$covariate == FALSE) {
+      return(NULL)
+    }
+    
+    if (input$covariate == TRUE) {
+      list(
+        sliderInput(
+          "teacher_effect",
+          "Mr. A's class, on average, gets this many points more than Mr. B's class",
+          min = 0,
+          max = 40,
+          value = 20
+        ),
+        checkboxInput('color_cov', div(style = "font-size:15px", "Color by teacher"), value = FALSE)
+      )
+    }
+  })
   output$showPlot <- renderPlot({
     data = df()
     p = ggplot(data, aes(predictor, outcome)) + geom_point() + 
       xlab('Hours of studying per week') + ylab('Test score (points)') + ylim(0, 100) + 
-      geom_smooth(method = 'lm') + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14))
+      geom_smooth(method = 'lm', se = FALSE) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14))
+    if(input$covariate == TRUE) { 
+      if(input$color_cov == TRUE){
+        p = ggplot(data, aes(predictor, outcome, col = Teacher)) + geom_point() + 
+      xlab('Hours of studying per week') + ylab('Test score (points)') + ylim(0, 100) + 
+      geom_smooth(method = 'lm', se = FALSE) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14), legend.position = 'none')
+      }
+    }
     print(p)
   })
 }
