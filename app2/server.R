@@ -98,7 +98,7 @@ function(input, output) {
       if(input$color_cov == TRUE){
         p = ggplot(data, aes(predictor, outcome, col = Teacher)) + geom_point() + 
       xlab('Hours of studying per week') + ylab('Test score (points)') + ylim(0, 100) + 
-      geom_smooth(method = 'lm', se = FALSE) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14), legend.position = 'none')
+      geom_smooth(method = 'lm', se = FALSE) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 14), legend.position = 'none') + scale_color_manual(values = cbp1)
       }
     }
     print(p)
