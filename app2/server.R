@@ -59,17 +59,41 @@ function(input, output) {
   output$downloadData <- downloadHandler(filename ="simulated_data.csv",
                                          content = function(file){
                                            write.csv(print(df()), file, row.names = F)})
-  output$lm <- renderText({
-    paste0('Estimates from linear regression:')
-  })
+  
   output$text <- renderUI({
+    if (input$showlm == FALSE) {
+      return(NULL)
+    }
+    if (input$showlm == TRUE) {
+      data = df()
+      lm.fit = coef(summary(lm(data$outcome ~ data$predictor)))
+      str = paste0('Estimates from linear regression:')
+      str0 <- paste("Intercept (Points earned if no studying at all):", formatbeta(lm.fit[1,1]))
+      str1 <- paste("Effect estimate (Points gained per hour studied):", formatbeta(lm.fit[2,1]))
+      str2 <- paste("Standard error (Reliability of estimate):", formatbeta(lm.fit[2,2]))
+      str3 <- paste("P-value (Significance of association):", formatpval(lm.fit[2,4]))
+      HTML(paste(str, str0, str1, str2, str3, sep = '<br/>'))
+    }
+  })
+  output$equation <- renderUI({
+    if (input$show_eq == FALSE) {
+      return(NULL)
+    }
+    if (input$show_eq == TRUE) {
     data = df()
+    intercept = 25
     lm.fit = coef(summary(lm(data$outcome ~ data$predictor)))
-    str1 <- paste("Effect estimate (Points gained per hour studied):", formatbeta(lm.fit[2,1]))
-    str2 <- paste("Standard error (Reliability of estimate):", formatbeta(lm.fit[2,2]))
-    str3 <- paste("P-value (Significance of association):", formatpval(lm.fit[2,4]))
-    HTML(paste(str1, str2, str3, sep = '<br/>'))
+    str1 <- paste("<br/>Actual equation used to generate data:")
+    if(input$covariate == FALSE){
+    str2 <- "y = (m * x) + b"
+    str3 <- paste0("Test score = (", input$Beta, " * hours studied)  + ", 25)
     
+    } else{
+      str2 <- 'y = (m1 * x1) + (m2 + x2) + b'
+      str3 <- paste0("Test score = (", input$Beta, " * hours studied)  + (", input$teacher_effect, " * teacher) + ", 25)
+    }
+    HTML(paste(str1, str2, str3, sep = '<br/>'))
+    }
   })
   output$teacherSlider = renderUI({
     if (input$covariate == FALSE) {
