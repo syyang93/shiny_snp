@@ -61,7 +61,11 @@ function(input, output) {
   })
   output$showPlot <- renderPlot({
     data = df()
-    p = ggplot(data, aes(alleles, disease)) + stat_smooth(method="glm", method.args=list(family="binomial"), se=FALSE) + geom_jitter(width = 0.1, height = 0.1) + xlab('Number of disease alleles')
+    p = ggplot(data, aes(alleles, disease)) + stat_smooth(method="glm", method.args=list(family="binomial"), se=FALSE) + 
+      geom_jitter(width = 0.1, height = 0.1) + 
+      xlab('Number of disease alleles') + 
+      scale_x_continuous(breaks=c(0, 1, 2)) + 
+      scale_y_continuous(breaks=c(0, 1)) + ylab('Disease status')
     
     print(p)
   })
