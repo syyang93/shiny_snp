@@ -26,7 +26,7 @@ Sys.setlocale("LC_ALL", "English")
 # rsconnect::setAccountInfo(name='syyang93',
                           # token='my_token',
                           # secret='my_secret')
-# setwd('~/Documents/Work/shiny_snp/app2/')
+# setwd('~/Documents/Work/shiny_snp/linear_regression_example/')
 # deployApp()
 
 # monthly exam, hours = hours studied in one month
