@@ -22,6 +22,12 @@ mysamp <- function(n, m, s, lwr, upr, nnorm) {
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # must specify encoding!
 Sys.setlocale("LC_ALL", "English")
 
+# Deploy App
+# rsconnect::setAccountInfo(name='syyang93',
+                          # token='my_token',
+                          # secret='my_secret')
+# setwd('~/Documents/Work/shiny_snp/app2/')
+# deployApp()
 
 # monthly exam, hours = hours studied in one month
 # colorblind palette
@@ -68,9 +74,9 @@ function(input, output) {
       data = df()
       lm.fit = coef(summary(lm(data$outcome ~ data$predictor)))
       str = paste0('Estimates from linear regression:')
-      str0 <- paste("Intercept (Points earned if no studying at all):", formatbeta(lm.fit[1,1]))
-      str1 <- paste("Effect estimate (Points gained per hour studied):", formatbeta(lm.fit[2,1]))
-      str2 <- paste("Standard error (Reliability of estimate):", formatbeta(lm.fit[2,2]))
+      str0 <- paste("Intercept:", formatbeta(lm.fit[1,1]))
+      str1 <- paste("Effect estimate:", formatbeta(lm.fit[2,1]))
+      str2 <- paste("Standard error:", formatbeta(lm.fit[2,2]))
       str3 <- paste("P-value (Significance of association):", formatpval(lm.fit[2,4]))
       HTML(paste(str, str0, str1, str2, str3, sep = '<br/>'))
     }

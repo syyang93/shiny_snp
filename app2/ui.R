@@ -1,6 +1,9 @@
 library(shiny)
 library(shinythemes)
 
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # must specify encoding!
+Sys.setlocale("LC_ALL", "English")
+
 fluidPage(theme = shinytheme("flatly"),
           tags$style(type='text/css', ".selectize-input { font-size: 14; line-height: 14px;} .selectize-dropdown { font-size: 14; line-height: 1.5; }"),
           
