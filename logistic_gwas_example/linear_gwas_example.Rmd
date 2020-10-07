@@ -1,0 +1,55 @@
+# get heights for people:
+```{r}
+# one million individuals
+set.seed(1)
+heights = rnorm(100000, mean = 170, sd = 8)
+p = 0.85
+q = 0.15
+aa = p^2
+tt = q^2
+at = 2*p*q
+aa + tt + at
+gts = sample(0:2, size = 10000, replace = T, prob = c(aa, at, tt))
+
+df = data.frame(samples = 1:10000, gts = gts, heights = heights)
+effect = 3 # everyone gets 3 extra cm for each T allele they have
+
+df$heightadd = df$gts * effect
+
+error = rnorm(10000, mean = 0, sd = 3)
+df$full_height = df$heights + df$heightadd + error
+
+library(ggplot2)
+ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "T" alleles on chromosome 1, position 200') + ylab('Height in cm') + scale_x_continuous(breaks=c(0, 1, 2))
+
+ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "T" alleles on chromosome 1, position 200') + ylab('Height in cm') + geom_smooth(method = 'lm') 
+```
+
+# logistic
+```{r}
+dis.0 = 10
+dis.1 = 50
+dis.2 = 100
+disease = rbind(data.frame(alleles = rep(0, dis.0), disease = rep(1, dis.0)), data.frame(alleles = rep(1, dis.1), disease = rep(1, dis.1)), data.frame(alleles = rep(2, dis.2), disease = rep(1, dis.2)))
+
+# Individuals without disease
+# nodis.0 = input$nodisease_0
+# nodis.1 = input$nodisease_1
+# nodis.2 = input$nodisease_2
+
+nodis.0 = 100 
+nodis.1 = 50
+nodis.2 = 10
+nodisease = rbind(data.frame(alleles = rep(0, nodis.0), disease = rep(0, nodis.0)), data.frame(alleles = rep(1, nodis.1), disease = rep(0, nodis.1)), data.frame(alleles = rep(2, nodis.2), disease = rep(0, nodis.2)))
+
+df = rbind(disease, nodisease)
+df$ID = sample(1:nrow(df))
+df = dplyr::select(df, ID, alleles, disease)
+df = df[order(df$ID),]
+
+binomial_smooth <- function(...) {
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
+}
+
+ggplot(df, aes(alleles, disease)) + geom_jitter(width = 0.05, height = 0.05) + binomial_smooth() + xlab('Number of "T" alleles on chromosome 1, position 200') + ylab('Type 2 diabetes status') + scale_x_continuous(breaks=c(0, 1, 2)) + scale_y_continuous(breaks=c(0, 1))
+```
