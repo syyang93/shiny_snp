@@ -23,9 +23,7 @@ Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # must specify encoding!
 Sys.setlocale("LC_ALL", "English")
 
 # Deploy App
-# rsconnect::setAccountInfo(name='syyang93',
-                          # token='my_token',
-                          # secret='my_secret')
+# rsconnect::setAccountInfo(name='syyang93', token='D5215863487CE5402209BD40C0749F16', secret=secret)
 # setwd('~/Documents/Work/shiny_snp/linear_regression_example/')
 # deployApp()
 
