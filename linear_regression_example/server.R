@@ -74,11 +74,10 @@ function(input, output) {
       data = df()
       lm.fit = coef(summary(lm(data$outcome ~ data$predictor)))
       str = paste0('Estimates from linear regression:')
-      str0 <- paste("Intercept:", formatbeta(lm.fit[1,1]))
-      str1 <- paste("Effect estimate:", formatbeta(lm.fit[2,1]))
-      str2 <- paste("Standard error:", formatbeta(lm.fit[2,2]))
+      str0 <- paste("Y-intercept (b):", formatbeta(lm.fit[1,1]))
+      str1 <- paste("Slope (m):", formatbeta(lm.fit[2,1]))
       str3 <- paste("P-value (Significance of association):", formatpval(lm.fit[2,4]))
-      HTML(paste(str, str0, str1, str2, str3, sep = '<br/>'))
+      HTML(paste(str, str0, str1, str3, sep = '<br/>'))
     }
   })
   output$equation <- renderUI({
