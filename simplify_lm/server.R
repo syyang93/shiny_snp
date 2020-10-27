@@ -24,7 +24,7 @@ Sys.setlocale("LC_ALL", "English")
 
 # Deploy App
 # rsconnect::setAccountInfo(name='syyang93', token='D5215863487CE5402209BD40C0749F16', secret=secret)
-# setwd('~/Documents/Work/shiny_snp/linear_regression_example/')
+# setwd('~/Documents/Work/shiny_snp/simplify_lm/')
 # deployApp()
 
 # monthly exam, hours = hours studied in one month
@@ -58,7 +58,7 @@ function(input, output) {
       df.first$Teacher = 'Placeholder'
       df.first$Teacher[classA.sample] = 'Mr. A'
       df.first$Teacher[-classA.sample] = 'Mr. B'
-      df.first$outcome[classA.sample] = df.first$outcome[classA.sample] + input$teacher_effect
+      df.first$outcome[classA.sample] = df.first$outcome[classA.sample] + 20
     } 
     df = df.first
   })
@@ -95,7 +95,7 @@ function(input, output) {
     
     } else{
       str2 <- 'y = (m1 * x1) + (m2 + x2) + b'
-      str3 <- paste0("Test score = (", input$Beta, " * hours studied)  + (", input$teacher_effect, " * teacher) + ", 25)
+      str3 <- paste0("Test score = (", input$Beta, " * hours studied)  + (20 * teacher) + ", 25)
     }
     HTML(paste(str1, str2, str3, sep = '<br/>'))
     }
@@ -107,14 +107,7 @@ function(input, output) {
     
     if (input$covariate == TRUE) {
       list(
-        sliderInput(
-          "teacher_effect",
-          "Mr. A's class, on average, gets this many points more than Mr. B's class",
-          min = 0,
-          max = 40,
-          value = 20
-        ),
-        checkboxInput('color_cov', div(style = "font-size:15px", "Color by teacher"), value = FALSE)
+        checkboxInput('color_cov', div(style = "font-size:15px", "Color by teacher"), value = TRUE)
       )
     }
   })
