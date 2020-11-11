@@ -12,7 +12,7 @@ aa + tt + at
 gts = sample(0:2, size = 10000, replace = T, prob = c(aa, at, tt))
 
 df = data.frame(samples = 1:10000, gts = gts, heights = heights)
-effect = 3 # everyone gets 3 extra cm for each T allele they have
+effect = 1 # everyone gets 3 extra cm for each T allele they have
 
 df$heightadd = df$gts * effect
 
@@ -20,9 +20,9 @@ error = rnorm(10000, mean = 0, sd = 3)
 df$full_height = df$heights + df$heightadd + error
 
 library(ggplot2)
-ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "T" alleles on chromosome 1, position 200') + ylab('Height in cm') + scale_x_continuous(breaks=c(0, 1, 2))
+ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "G" alleles on chromosome 1, position 205') + ylab('Height in cm') + scale_x_continuous(breaks=c(0, 1, 2))
 
-ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "T" alleles on chromosome 1, position 200') + ylab('Height in cm') + geom_smooth(method = 'lm') 
+ggplot(df, aes(gts, full_height)) + geom_point() + xlab('Number of "A" alleles on chromosome 1, position 223') + ylab('Height in cm') + geom_smooth(method = 'lm') + scale_x_continuous(breaks=c(0, 1, 2))
 ```
 
 # logistic
